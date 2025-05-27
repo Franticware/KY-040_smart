@@ -36,7 +36,7 @@ void GPIO_Toggle_INIT(void) {
 		GPIO_InitTypeDef GPIO_InitStructure = { 0 };
 		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
 		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6;
-		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_30MHz;
 		GPIO_Init(GPIOD, &GPIO_InitStructure);
 		GPIO_WriteBit(GPIOD, GPIO_Pin_4, (Bit_SET));
