@@ -112,11 +112,13 @@ int main(void) {
 				state = SN00;
 			} else if (inputRot == 0b11) {
 				state = S11;
-				// insert - output signal sequence
-				QueuePut(&queue, GPIO_Pin_4 | 0);
-				QueuePut(&queue, GPIO_Pin_5 | 0);
-				QueuePut(&queue, GPIO_Pin_4 | 1);
-				QueuePut(&queue, GPIO_Pin_5 | 1);
+				if (QueueHasRoom(&queue)) {
+					// insert - output signal sequence
+					QueuePut(&queue, GPIO_Pin_4 | 0);
+					QueuePut(&queue, GPIO_Pin_5 | 0);
+					QueuePut(&queue, GPIO_Pin_4 | 1);
+					QueuePut(&queue, GPIO_Pin_5 | 1);
+				}
 			}
 			break;
 		case SN00:
@@ -159,11 +161,13 @@ int main(void) {
 				state = SP00;
 			} else if (inputRot == 0b11) {
 				state = S11;
-				// insert + output signal sequence
-				QueuePut(&queue, GPIO_Pin_5 | 0);
-				QueuePut(&queue, GPIO_Pin_4 | 0);
-				QueuePut(&queue, GPIO_Pin_5 | 1);
-				QueuePut(&queue, GPIO_Pin_4 | 1);
+				if (QueueHasRoom(&queue)) {
+					// insert + output signal sequence
+					QueuePut(&queue, GPIO_Pin_5 | 0);
+					QueuePut(&queue, GPIO_Pin_4 | 0);
+					QueuePut(&queue, GPIO_Pin_5 | 1);
+					QueuePut(&queue, GPIO_Pin_4 | 1);
+				}
 			}
 			break;
 		}
@@ -171,9 +175,11 @@ int main(void) {
 		if (tick) {
 			tick = 0;
 			uint8_t inputSw = !!(inputData & 4);
-			if (inputSw != swState) {
-				QueuePut(&queue, GPIO_Pin_6 | inputSw);
-				swState = inputSw;
+			if (QueueHasRoom(&queue)) {
+				if (inputSw != swState) {
+					QueuePut(&queue, GPIO_Pin_6 | inputSw);
+					swState = inputSw;
+				}
 			}
 			if (QueueNotEmpty(&queue)) {
 				uint8_t item = QueueGet(&queue);
